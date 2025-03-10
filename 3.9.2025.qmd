@@ -4,10 +4,32 @@ format: docx
 editor: visual
 ---
 
+```{r, Loading Libraries and Loading Data, echo=FALSE, results='hide', warning=FALSE}
+library(tidyverse)
+library(tidytuesdayR)
 
-
-```{r}
-test
+#tuesdata = tidytuesdayR::tt_load('2025-03-04')
+longbeach <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2025/2025-03-04/longbeach.csv')
 ```
 
+```{r, Data Check, echo=FALSE, results='hide', warning=FALSE}
+head(longbeach)
+str(longbeach)
+
+```
+
+
+```{r, visuals, echo=FALSE, warning=FALSE}
+
+#ggplot(longbeach) +
+  #geom_bar(aes(x = animal_type))
+
+
+longbeach %>% 
+ggplot(aes(x = animal_type)) +
+  geom_bar() + 
+  labs(title = "Bar Plot of Animal Types", x = "Animal Type", y = "Count") +
+  theme_minimal()
+
+```
 
