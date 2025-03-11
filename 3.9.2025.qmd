@@ -13,23 +13,103 @@ longbeach <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/
 ```
 
 ```{r, Data Check, echo=FALSE, results='hide', warning=FALSE}
-head(longbeach)
-str(longbeach)
-
+#head(longbeach)
+#str(longbeach)
+summary(longbeach)
 ```
 
 
-```{r, visuals, echo=FALSE, warning=FALSE}
+```{r, Bar Plot Animal Type, echo=FALSE, warning=FALSE}
 
 #ggplot(longbeach) +
   #geom_bar(aes(x = animal_type))
 
 
 longbeach %>% 
-ggplot(aes(x = animal_type)) +
+ggplot(aes(x = animal_type, fill = "red")) +
   geom_bar() + 
-  labs(title = "Bar Plot of Animal Types", x = "Animal Type", y = "Count") +
+  labs(title = "Bar Plot of Animal Types", x = "Animal Type") +
+  guides(fill = "none") +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5))
+
+```
+
+```{r, Intake Types}
+
+min_filter = 500
+
+longbeach %>% 
+  group_by(intake_type) %>% 
+  filter(n() >= min_filter) %>% 
+  ggplot(aes(x = intake_type, fill = "red")) +
+  guides(fill = "none") +
+  geom_bar() + 
   theme_minimal()
+
+
+```
+
+```{r, Outcome Types}
+
+longbeach %>% 
+  group_by(outcome_type) %>% 
+  filter(n() >= min_filter) %>% 
+  ggplot(aes(x = outcome_type, fill = "red")) +
+  geom_bar() +
+  guides(fill = "none") + 
+  theme_minimal()
+
+
+```
+
+```{r, outcome types}
+longbeach %>% 
+  group_by(outcome_type) %>% 
+  summarize(count = n()) %>% 
+  filter(count >= 1000) %>% 
+  ggplot(aes(x = fct_reorder(outcome_type, -count), y = count, fill = "red")) + 
+  geom_col() +
+  labs(x = NULL, y = NULL, title = "Count of Outcome Types") +
+  guides(fill = "none") + 
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+```{r, Most Adopted Pets}
+adopted = longbeach %>% 
+  select(animal_type, outcome_type) %>% 
+  filter(outcome_type == "adoption") %>%
+  group_by(animal_type) %>% 
+  summarize(count = n())
+
+adopted %>%   
+  ggplot(aes(x = fct_reorder(animal_type, -count), y = count, fill = "red")) +
+  geom_col() +
+  guides(fill = "none") +
+  labs(title = "Most Adopted Pets", x = NULL, y =  NULL) +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5))
+
+```
+
+```{r, Adopted Pets Over The Years}
+adopted_years = longbeach %>% 
+  select(animal_type, outcome_type, outcome_date) %>% 
+  filter(outcome_type == "adoption") %>% 
+  arrange(outcome_date) %>% 
+  mutate(year = year(outcome_date)) %>% 
+  group_by(year) %>%
+  summarize(count = n())
+
+adopted_years %>% 
+  ggplot(aes(x = year, y = count, fill = "red")) +
+  geom_col() +
+  geom_text(aes(label = count), vjust = -0.5, size = 5) +
+  labs(title = "Adoptions Through The Years", x = NULL, y = NULL) +
+  guides(fill = "none") +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5))
 
 ```
 
