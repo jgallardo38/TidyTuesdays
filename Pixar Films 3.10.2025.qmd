@@ -5,11 +5,70 @@ editor: visual
 ---
 
 
-```{r}
+```{r, loading libraries and data}
 library(tidyverse)
 library(tidytuesdayR)
+library(scales)
 
 #tuesdata = tidytuesdayR::tt_load('2025-03-04')
 pixar_films <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2025/2025-03-11/pixar_films.csv')
 public_response <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2025/2025-03-11/public_response.csv')
+
+box_office <- readr::read_csv('https://raw.githubusercontent.com/erictleung/pixarfilms/master/data-raw/box_office.csv')
+
 ```
+
+
+```{r, data}
+
+summary(pixar_films)
+str(pixar_films)
+
+
+pixar_films %>% 
+  group_by(film_rating) %>% 
+  summarize(count = n())
+
+```
+
+```{r}
+
+pixar_films %>% 
+  ggplot(aes(run_time)) +
+  geom_histogram()
+
+```
+ 
+```{r}
+combine_date = left_join(pixar_films, public_response, by = "film")
+
+combine_date %>% 
+  arrange(desc(critics_choice))
+```
+ 
+```{r}
+combine_data2 = left_join(combine_date, box_office, by = "film")
+
+
+combine_data2 %>% 
+  select(film, rotten_tomatoes, metacritic, critics_choice, box_office_us_canada, box_office_worldwide) %>% 
+  #mutate(budget = dollar(budget)) %>% 
+  mutate(box_office_us_canada = dollar(box_office_us_canada)) %>% 
+  #mutate(box_office_other = dollar(box_office_other)) %>% 
+  mutate(box_office_worldwide = dollar(box_office_worldwide)) %>% 
+  arrange(desc(rotten_tomatoes)) %>% 
+  filter(rotten_tomatoes >= 90)
+
+
+combine_data2 %>% 
+  filter(film != "NA") %>% 
+  ggplot(aes(x = fct_reorder(film, box_office_us_canada), y = box_office_us_canada)) +
+  geom_col() +
+  labs(title = "Top Ranked Movies by Box Office Revenue (US/CAN)", x = NULL, y = NULL) +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  coord_flip() +
+  scale_y_continuous()
+  
+```
+
