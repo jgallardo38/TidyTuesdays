@@ -4,7 +4,7 @@ format: docx
 editor: visual
 ---
 
-```{r, Loading Libraries and Loading Data, echo=FALSE, results='hide', warning=FALSE}
+```{r Loading Libraries and Loading Data, echo=FALSE, results='hide', warning=FALSE}
 library(tidyverse)
 library(tidytuesdayR)
 
@@ -12,14 +12,13 @@ library(tidytuesdayR)
 longbeach <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2025/2025-03-04/longbeach.csv')
 ```
 
-```{r, Data Check, echo=FALSE, results='hide', warning=FALSE}
+```{r Data Check, echo=FALSE, results='hide', warning=FALSE}
 #head(longbeach)
 #str(longbeach)
 summary(longbeach)
 ```
 
-
-```{r, Bar Plot Animal Type, echo=FALSE, warning=FALSE}
+```{r Bar Plot Animal Type, echo=FALSE, warning=FALSE}
 
 #ggplot(longbeach) +
   #geom_bar(aes(x = animal_type))
@@ -35,7 +34,7 @@ ggplot(aes(x = animal_type, fill = "red")) +
 
 ```
 
-```{r, Intake Types}
+```{r Intake Types}
 
 min_filter = 500
 
@@ -50,7 +49,7 @@ longbeach %>%
 
 ```
 
-```{r, Outcome Types}
+```{r Outcome Types}
 
 longbeach %>% 
   group_by(outcome_type) %>% 
@@ -63,7 +62,7 @@ longbeach %>%
 
 ```
 
-```{r, outcome types}
+```{r outcome types}
 longbeach %>% 
   group_by(outcome_type) %>% 
   summarize(count = n()) %>% 
@@ -76,7 +75,7 @@ longbeach %>%
   theme(plot.title = element_text(hjust = 0.5))
 ```
 
-```{r, Most Adopted Pets}
+```{r Most Adopted Pets}
 adopted = longbeach %>% 
   select(animal_type, outcome_type) %>% 
   filter(outcome_type == "adoption") %>%
@@ -93,7 +92,7 @@ adopted %>%
 
 ```
 
-```{r, Adopted Pets Over The Years}
+```{r Adopted Pets Over The Years}
 adopted_years = longbeach %>% 
   select(animal_type, outcome_type, outcome_date) %>% 
   filter(outcome_type == "adoption") %>% 
@@ -112,4 +111,3 @@ adopted_years %>%
   theme(plot.title = element_text(hjust = 0.5))
 
 ```
-

@@ -1,0 +1,21 @@
+---
+title: "March Madness 3.12.2025"
+format: docx
+editor: visual
+---
+
+
+```{r loading libraries and data}
+library(tidyverse)
+
+team_results <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2024/2024-03-26/team-results.csv')
+public_picks <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2024/2024-03-26/public-picks.csv')
+
+
+```
+
+```{r}
+summary(team_results)
+```
+ 
+ 
