@@ -7,15 +7,50 @@ editor: visual
 
 ```{r loading libraries and data}
 library(tidyverse)
-
+library(scales)
 team_results <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2024/2024-03-26/team-results.csv')
 public_picks <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2024/2024-03-26/public-picks.csv')
+
+theme_set(theme_minimal())
+
+toptenpaserank = team_results %>% 
+  select(TEAM, PASERANK, WINPERCENT, CHAMP, CHAMPPERCENT, GAMES) %>% 
+  filter(PASERANK <= 10) %>% 
+  arrange(PASERANK)
+toptenpaserank
+```
+
+Winning Percentage by Top 10 Ranked Teams
+
+```{r}
+
+team_results$PAKERANK = as.integer(team_results$PAKERANK)
+
+team_results %>% 
+  filter(PASERANK <= 10) %>% 
+  ggplot(aes(x = fct_reorder(TEAM, -PASERANK), y = WINPERCENT)) +
+  geom_col() +
+  geom_text(aes(label = percent(WINPERCENT)), hjust = -0.2) +
+  coord_flip() + 
+  labs(x = "Teams", y = "", title = "Winning Percentage by Top 10 Ranked Teams (PASERANK)") +
+  scale_y_continuous(labels = percent) 
+  
 
 
 ```
 
+Would playing more games give you a higher PASE Rank?
+ 
 ```{r}
-summary(team_results)
+
+team_results %>%
+  filter(PASERANK <= 30) %>% 
+  ggplot(aes(GAMES, PASERANK)) +
+  geom_point() +
+  geom_text(aes(label = TEAM), hjust = 0.5, vjust = -1) +
+  labs(x = "# of Games Played", y = "PASE Rank", title = "PASE Rank by Games Played") +
+  theme(plot.title = element_text(hjust = 0.5))
+  
 ```
  
  
